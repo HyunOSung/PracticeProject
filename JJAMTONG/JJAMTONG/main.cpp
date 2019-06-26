@@ -6,32 +6,22 @@ using namespace std;
 
 int main()
 {
-	int a = 10000;
-	float pi = 0;
+	int a[5];
+	int b = 0;
 
-	for (int j = 0; j < 10; ++j)
-	{
-
-		printf("%d\n", a);
-		pi = 0;
-		for (int i = 0; i < a + 1; ++i)
-		{
-			float var = 1.0f / ((2.0f*(float)i) + 1.0f);
-			if (i % 2 == 0)
-			{
-				pi = pi + var;
-			}
-			else
-			{
-				pi = pi - var;
-			}
-			if (i != 0 && i % a == 0)
-			{
-				printf("%f\n", 4.0f * pi);
-			}
-		}
-
-		a = a + 10000;
+	for (int i = 0; i < 5; ++i)
+	{		
+		cin >> b;		
+		a[i] = b;
+		printf("%d\n", a[i]);
 	}
+	for (int i = 4; i >= 0; --i)
+	{
+		printf("%d\n", a[i]);
+	}
+//	printf("%d\n", &a);
+
+
+
 	return 0;
 }
