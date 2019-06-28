@@ -12,6 +12,8 @@ void Swap(int& a, int& b)
 	b = Temp;
 }
 
+
+
 void SelectionSort(int* Data, int size)
 {
 	for (int i = 0; i < size; ++i)

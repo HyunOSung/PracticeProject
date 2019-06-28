@@ -1,9 +1,20 @@
 #include <stdio.h>
 #include<iostream>
+#include<time.h>
 
 using namespace std;
 
-#define Size 10
+
+//해보고 싶은 것들
+//1. 큐를 구현해서 탐색 경로 순으로 인쇄
+//2. 랜덤하게 시작점과 탈출점 변경
+//3. 배열 세트 여러가지를 만들어서 랜덤하게 4방향 배치한 맵 만들기
+//4. 키 만들어서 획득하고 탈출하는 로직 만들기
+//5. 콘솔 상에서 실시간으로 탐색하는 것 볼 수 있게 시각화 하기
+
+
+
+#define Size 20
 
 //맵에 배치될 오브젝트들의 종류 열거
 #define WAY 0
@@ -11,6 +22,7 @@ using namespace std;
 #define	ROUTE 2
 #define	BLOCKED 3
 #define	START 4
+#define GOAL 7
 #define	END 9
 
 //미로찾기 상태 표시
@@ -19,20 +31,28 @@ bool escape = false;
 bool stuck = false;
 
 
-int MapData[Size][Size] = {
-	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{1, 0, 1, 0, 1, 1, 0, 1, 1, 1},
-	{1, 1, 1, 0, 1, 0, 0, 0, 0, 0},
-	{1, 0, 0, 0, 0, 1, 0, 1, 1, 1},
-	{1, 1, 1, 1, 0, 0, 0, 0, 1, 0},
-	{0, 0, 0, 0, 0, 1, 1, 0, 0, 0},
-	{0, 1, 0, 1, 0, 1, 1, 0, 1, 1},
-	{1, 1, 0, 1, 0, 1, 0, 0, 1, 1},
-	{0, 0, 0, 0, 0, 1, 1, 0, 1, 1},
-	{1, 0, 1, 1, 0, 0, 0, 0, 0, 0}
+double MapData[Size][Size] = {
+	{ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 },
+	{ 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1 },
+	{ 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0 },
+	{ 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1 },
+	{ 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0 },
+	{ 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0 },
+	{ 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1 },
+	{ 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1 },
+	{ 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1 },
+	{ 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 },
+	{ 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1 },
+	{ 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0 },
+	{ 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1 },
+	{ 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0 },
+	{ 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0 },
+	{ 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1 },
+	{ 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1 },
+	{ 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1 },
+	{ 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0 }
 };
-
-
 
 
 //enum class Move
@@ -56,47 +76,52 @@ int PointSetting(int Object, int y, int x)
 	return  0;
 }
 
+
+
+
+
 bool SearchPath(int x, int y)
 {
 	if (x<0 || y<0 || x>Size-1 || y>Size-1)
 	{
-		cout << "진입 확인 1" << endl;
 		//배열 범위 밖일 경우 탈출
-		return false;
-	}
-	else if (MapData[y][x] != WAY)
-	{
-		cout << "진입 확인 2" << endl;
 		return false;
 	}
 	else if (MapData[y][x] == END)
 	{
-		cout << "진입 확인 3" << endl;
-		MapData[y][x] = ROUTE;
+		//탈출점 도착하면 탈출
+		MapData[y][x] = GOAL;
 		return true;
+	}
+	else if (MapData[y][x] != WAY)
+	{
+		//길이 아닐 경우 
+		return false;
 	}
 	else
 	{
-		
+		// 이동
 		MapData[y][x] = ROUTE;
-		if (SearchPath(y, x+1) ||
-			SearchPath(y+1, x) ||
-			SearchPath(y-1, x) ||
-			SearchPath(y, x-1))
+		if (SearchPath(x-1, y) ||
+			SearchPath(x, y+1) ||
+			SearchPath(x, y-1) ||
+			SearchPath(x+1, y))
+		//if (SearchPath(x - 1, y) ||
+		//	SearchPath(x, y - 1) ||
+		//	SearchPath(x + 1, y) ||
+		//	SearchPath(x, y + 1))
 		{
-			cout << "진입 확인 4" << endl;
 			return true;
 		}
 		else
 		{
-			cout << "진입 확인 5" << endl;
+			//막다른 길 표시
 			MapData[y][x] = BLOCKED;
 			return false;
 		}
 	}
 	return true;
 }
-
 
 int PrintMap()
 {
@@ -108,31 +133,52 @@ int PrintMap()
 		}
 		cout << endl;
 	}
+	cout << endl;
 	return  0;
 }
 
 int PrintOutEscapeRoute()
 {
+	cout << "------------탈출 경로-------------" << endl;
 	//탈출경로 인쇄
-
+	
+	for (int i = 0; i < Size; ++i)
+	{
+		for (int j = 0; j < Size; ++j)
+		{
+			if (MapData[i][j] == ROUTE)
+			{				
+				cout << "{" << i << " , " << j << "}" << endl;
+			}
+			else if (MapData[i][j] == GOAL)
+			{
+				cout << "{" << i << " , " << j << "}" << "탈출지점입니다. " << endl;
+				break;
+			}
+		}
+	}
 
 	return  0;
 }
 
-
 int main()
 {
+	srand((unsigned int)time(0));
+
 	//시작 좌표 설정
 	int startingX = 0;
 	int startingY = 0;
 
 	//탈출 좌표 설정
-	int escapeX = 9;
-	int escapeY = 9;
+	int escapeX = 19;
+	int escapeY = 19;
 
-	//PointSetting(START, startingX, startingY); //시작지점 설정
+	PointSetting(rand()%4,startingX ,startingY ); //시작지점 설정
 	PointSetting(END, escapeY, escapeX);  //탈출지점 설정
 
 	SearchPath(startingY, startingX);
 	PrintMap();
+	PrintOutEscapeRoute();
+	
+	
 }
