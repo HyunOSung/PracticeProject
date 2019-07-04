@@ -44,6 +44,7 @@ int main()
 		
 		if (a%i == 0)
 		{		
+			cout <<"½Äº°¿ë  " << j << endl;
 			a = a / i;
 			multiSetA[j][0] = i;
 			cout << multiSetA[0][0] << endl;
@@ -53,15 +54,16 @@ int main()
 				multiSetA[j][1] += 1;
 
 			}
-			else if (i != multiSetA[j][0])
-			{					
-				j++;
-			}
 			cout << a << endl;
+		}
+		else if (a%i != 0)
+		{
+			i++;
 		}
 		else
 		{
 			i++;
+			j++;
 		}
 
 		if (a == 1)
