@@ -29,34 +29,28 @@ int main()
 
 	int i = 2;
 	int j = 0;
+
 	int k = 2;
 	int e = 1;
+
 	int l = 0;
 	int r = 1;
-	int m = 0;
 
-	int q = 1;
-
+	int result = 1;
 
 	// 정수 입력 받아서 나누기
 	while (EndA == false)
-	{
-		
+	{		
 		if (a%i == 0)
 		{		
-			cout <<"식별용  " << j << endl;
 			a = a / i;
 			multiSetA[j][0] = i;
-			cout << multiSetA[0][0] << endl;
 			if (multiSetA[j][0] == i)
 			{
-				cout << multiSetA[0][1] << endl;
 				multiSetA[j][1] += 1;
-
 			}
-			cout << a << endl;
 		}
-		else if (a%i != 0)
+		else if (i%2 != 0) //i가 2의 배수가 아니라면 1 더하기
 		{
 			i++;
 		}
@@ -71,30 +65,27 @@ int main()
 			EndA = true;
 		}
 	}
+
 	while (EndB == false)
 	{
-
 		if (b%k == 0)
 		{
-			b= b / k;
+			b = b / k;
 			multiSetB[l][0] = k;
-			if (k == multiSetB[l][0])
+			if (multiSetB[l][0] == k)
 			{
 				multiSetB[l][1] += 1;
-
 			}
-			else if (k != multiSetB[l][0])
-			{
-				
-				l++;
-			}
+		}
+		else if (k % 2 != 0) //i가 2의 배수가 아니라면 1 더하기
+		{
+			k++;
 		}
 		else
 		{
 			k++;
+			l++;
 		}
-
-
 
 		if (b == 1)
 		{
@@ -103,57 +94,54 @@ int main()
 	}
 	// 배열 두 개 비교해서 ,0이 같으면 1비교, 1비교에서 더 높은쪽 인수를 반복문 진입으로 곱
 
-	
+	int m = 0;
+	int n = 0;
+
 
 	while (EndCal == false)
-	{//배열 [][0]인자가 같을 경우
-		if (multiSetA[m][0] == multiSetB[m][0])
+	{
+		if (multiSetA[m][0] == multiSetB[n][0]) //같은 수가 있다면
 		{
-			if (multiSetA[m][1] >= multiSetB[m][1])
+			if (multiSetA[m][1] >= multiSetB[n][1])
 			{
-				cout << multiSetA[0][1]  << endl;
-				for (int n = multiSetA[m][1]; n < multiSetA[m][1]; ++n)
+				for (int i = 0; i < multiSetA[m][1]; ++i)
 				{
-					
-					q *= multiSetA[m][0];
+					result *= multiSetA[m][0];
 				}
+				m++;
+				n++;
 			}
 			else
 			{
-				for (int n = multiSetB[m][1]; n < multiSetB[m][1]; ++n)
+				for (int i = 0; i < multiSetB[m][1]; ++i)
 				{
-					q *= multiSetB[m][0];
+					result *= multiSetA[m][0];
 				}
+				m++;
+				n++;
 			}
 		}
-		else if (multiSetA[m][0] != multiSetB[m][0])
+		else if (multiSetA[m][0] != multiSetB[n][0]) //같은수가 없다면
 		{
-
-			for (int n = multiSetA[m][1]; n < multiSetA[m][1]; ++n)
+			for (int i = 0; i < multiSetA[m][1]; ++i)
 			{
-				q *= multiSetA[m][0];
+				result *= multiSetA[m][0];
+			}
+			for (int i = 0; i < multiSetB[m][1]; ++i)
+			{
+				result *= multiSetA[m][0];
 			}
 
-			for (int n = multiSetB[m][1]; n < multiSetB[m][1]; ++n)
-			{
-				q *= multiSetB[m][0];
-			}
+			m++;
+			n++;
 		}
-		
-		if (multiSetA[m][0] && multiSetB[m][0] == 0)
+
+		if (multiSetA[m][0] == 0)
 		{
-			cout << q << endl;
+
+			cout << result << endl;
 			EndCal = true;
+			break;
 		}
-
-
-		m++;
-		cout << m << endl;
 	}
-
-
-
-
-
-
 }
